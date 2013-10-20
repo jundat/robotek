@@ -1,0 +1,17 @@
+/Resources/photoshop
+
+/Resources/help
+
+/proj.win32/Debug.win32
+
+/proj.win32/*.sdf
+
+/proj.marmalade
+/proj.android
+/proj.blackberry
+/proj.ios
+/proj.linux
+/proj.mac
+
+/proj.wp8
+/proj.winrt
