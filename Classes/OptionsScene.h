@@ -29,6 +29,8 @@ public:
 	void soundOffClick(CCObject* pSender);
 
 	void resetCampaign(CCObject* pSender);
+
+	void closeScene(CCNode* pSender);
 	
 	// implement the "static node()" method manually
 	CREATE_FUNC(OptionsScene);

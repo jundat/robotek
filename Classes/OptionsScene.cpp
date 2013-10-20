@@ -194,8 +194,18 @@ void OptionsScene::soundOffClick( CCObject* pSender )
 
 void OptionsScene::resetCampaign( CCObject* pSender )
 {
-
+	CCAction* sequen = CCSequence::create(
+	 	CCEaseBackInOut::create(CCMoveBy::create(2, ccp(0, -640))),
+		CCCallFuncN::create(this, callfuncN_selector(OptionsScene::closeScene)),
+		NULL);
+	this->runAction(sequen);
 }
+
+void OptionsScene::closeScene( CCNode* pSender )
+{
+	this->removeFromParent();
+}
+
 
 
 
