@@ -122,24 +122,38 @@ bool MenuScene::init()
 
 	//menu item...
 
-	CCMenuItemImage *itemStart = CCMenuItemImage::create("itemStart.png", "itemStart.png", this, menu_selector(MenuScene::startClicked));
-	CCMenuItemImage *itemScores = CCMenuItemImage::create("itemScores.png", "itemScores.png", this, menu_selector(MenuScene::scoresClicked));
-	CCMenuItemImage *itemOptions = CCMenuItemImage::create("itemOptions.png", "itemOptions.png", this, menu_selector(MenuScene::optionsClicked));
-	CCMenuItemImage *itemAbout = CCMenuItemImage::create("itemAbout.png", "itemAbout.png", this, menu_selector(MenuScene::aboutClicked));
-	CCMenuItemImage *itemHelp = CCMenuItemImage::create("itemHelp.png", "itemHelp.png", this, menu_selector(MenuScene::helpClicked));
+	m_itemStart = CCMenuItemImage::create("itemStart.png", "itemStart.png", this, menu_selector(MenuScene::startClicked));
+	m_itemScores = CCMenuItemImage::create("itemScores.png", "itemScores.png", this, menu_selector(MenuScene::scoresClicked));
+	m_itemOptions = CCMenuItemImage::create("itemOptions.png", "itemOptions.png", this, menu_selector(MenuScene::optionsClicked));
+	m_itemAbout = CCMenuItemImage::create("itemAbout.png", "itemAbout.png", this, menu_selector(MenuScene::aboutClicked));
+	m_itemHelp = CCMenuItemImage::create("itemHelp.png", "itemHelp.png", this, menu_selector(MenuScene::helpClicked));
 
-	itemStart->setPosition(ccp(visibleSize.width - itemStart->getContentSize().width/2, visibleSize.height - 20 - itemStart->getContentSize().height/2));
-	itemScores->setPosition(ccp(visibleSize.width - itemScores->getContentSize().width/2, visibleSize.height - 100 - itemScores->getContentSize().height/2));
-	itemOptions->setPosition(ccp(visibleSize.width - itemOptions->getContentSize().width/2, visibleSize.height - 180 - itemOptions->getContentSize().height/2));
-	itemAbout->setPosition(ccp(visibleSize.width - itemAbout->getContentSize().width/2, visibleSize.height - 260 - itemAbout->getContentSize().height/2));
-	itemHelp->setPosition(ccp(visibleSize.width - itemHelp->getContentSize().width/2, visibleSize.height - 340 - itemHelp->getContentSize().height/2));
+	m_itemStart->setPosition(ccp(visibleSize.width - m_itemStart->getContentSize().width/2, visibleSize.height - 20 - m_itemStart->getContentSize().height/2));
+	m_itemScores->setPosition(ccp(visibleSize.width - m_itemScores->getContentSize().width/2, visibleSize.height - 100 - m_itemScores->getContentSize().height/2));
+	m_itemOptions->setPosition(ccp(visibleSize.width - m_itemOptions->getContentSize().width/2, visibleSize.height - 180 - m_itemOptions->getContentSize().height/2));
+	m_itemAbout->setPosition(ccp(visibleSize.width - m_itemAbout->getContentSize().width/2, visibleSize.height - 260 - m_itemAbout->getContentSize().height/2));
+	m_itemHelp->setPosition(ccp(visibleSize.width - m_itemHelp->getContentSize().width/2, visibleSize.height - 340 - m_itemHelp->getContentSize().height/2));
 
+	m_repeatFadeInOut = CCRepeatForever::create(CCSequence::create(
+		CCFadeIn::create(0.5f), 
+		CCFadeOut::create(0.5f),
+		NULL));
+	m_repeatFadeInOut->retain();
+	
+	m_currentItem = m_itemStart;
+	m_itemStart->runAction(m_repeatFadeInOut);
 
 	// create menu, it's an autorelease object
-	CCMenu* pMenu = CCMenu::create(itemStart, itemScores, itemOptions, itemAbout, itemHelp, NULL);
+	CCMenu* pMenu = CCMenu::create(m_itemStart, m_itemScores, m_itemOptions, m_itemAbout, m_itemHelp, NULL);
 	pMenu->setPosition(CCPointZero);
 	this->addChild(pMenu, 1);
-	
+
+	m_buffer = CCSprite::create("imgFade.png");
+	m_buffer->setScaleX(1136);
+	m_buffer->setScaleY(640);
+	m_buffer->setPosition(ccp(visibleSize.width/2, visibleSize.height/2));
+	m_buffer->setOpacity(0);
+	this->addChild(m_buffer, 10);
 
 	this->scheduleUpdate();
 	return true;
@@ -209,8 +223,6 @@ void MenuScene::update(float delta)
 
 void MenuScene::deleteTriangle(CCNode* pSender)
 {
-	this->removeChild(pSender);
-	
 	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize(); //gốc tọa độ ở góc dưới, bên trái
 	
 	ccBlendFunc blendLinearDodge = ccBlendFunc();
@@ -250,16 +262,35 @@ void MenuScene::deleteTriangle(CCNode* pSender)
 	sprNew->runAction(sequen);
 }
 
-//500
-void MenuScene::startClicked(CCObject* pSender)
+
+#pragma region ADD NEW LAYER
+
+
+void MenuScene::addStartLayer( CCNode* pSender )
 {
-	CCMessageBox("start", "MENU");
-	//CCDirector::sharedDirector()->end();
+	m_currentItem->setOpacity(255);
+	m_currentItem = m_itemStart;
+	m_repeatFadeInOut->startWithTarget(m_itemStart);
+
+	for (int i = 900; i >= 500; i -= 100)
+	{
+		CCNode* scene = this->getChildByTag(i);
+		if(scene != NULL)
+		{
+			scene->removeFromParent();
+		}
+	}
+
+	//CCNode* maingamescene = MainGameScene::create();
+	//this->addChild(maingamescene, 2, 500);
 }
 
-//600
-void MenuScene::scoresClicked( CCObject* pSender )
+void MenuScene::addScoresLayer( CCNode* pSender )
 {
+	m_currentItem->setOpacity(255);
+	m_currentItem = m_itemScores;
+	m_repeatFadeInOut->startWithTarget(m_itemScores);
+
 	for (int i = 900; i >= 500; i -= 100)
 	{
 		CCNode* scene = this->getChildByTag(i);
@@ -273,9 +304,12 @@ void MenuScene::scoresClicked( CCObject* pSender )
 	this->addChild(about, 2, 600);
 }
 
-//700
-void MenuScene::optionsClicked( CCObject* pSender )
+void MenuScene::addOptionsLayer( CCNode* pSender )
 {
+	m_currentItem->setOpacity(255);
+	m_currentItem = m_itemOptions;
+	m_repeatFadeInOut->startWithTarget(m_itemOptions);
+
 	for (int i = 900; i >= 500; i -= 100)
 	{
 		CCNode* scene = this->getChildByTag(i);
@@ -289,9 +323,12 @@ void MenuScene::optionsClicked( CCObject* pSender )
 	this->addChild(option, 3, 700);
 }
 
-//800
-void MenuScene::aboutClicked( CCObject* pSender )
+void MenuScene::addAboutLayer( CCNode* pSender )
 {
+	m_currentItem->setOpacity(255);
+	m_currentItem = m_itemAbout;
+	m_repeatFadeInOut->startWithTarget(m_itemAbout);
+
 	for (int i = 900; i >= 500; i -= 100)
 	{
 		CCNode* scene = this->getChildByTag(i);
@@ -305,9 +342,12 @@ void MenuScene::aboutClicked( CCObject* pSender )
 	this->addChild(about, 2, 800);
 }
 
-//900
-void MenuScene::helpClicked( CCObject* pSender )
-{
+void MenuScene::addHelpLayer( CCNode* pSender )
+{	
+	m_currentItem->setOpacity(255);
+	m_currentItem = m_itemHelp;
+	m_repeatFadeInOut->startWithTarget(m_itemHelp);
+
 	for (int i = 900; i >= 500; i -= 100)
 	{
 		CCNode* scene = this->getChildByTag(i);
@@ -320,3 +360,68 @@ void MenuScene::helpClicked( CCObject* pSender )
 	CCNode* help = HelpScene::create();
 	this->addChild(help, 2, 900);
 }
+
+
+#pragma endregion
+
+
+#pragma region MENU ITEM HANDLER
+
+
+//500
+void MenuScene::startClicked(CCObject* pSender)
+{
+	CCAction* fadeInOut = CCSequence::create(
+		CCFadeIn::create(0.5f), 
+		CCCallFuncN::create(this, callfuncN_selector(MenuScene::addStartLayer)),
+		CCFadeOut::create(0.5f),
+		NULL);
+	m_buffer->runAction(fadeInOut);
+}
+
+//600
+void MenuScene::scoresClicked( CCObject* pSender )
+{
+	CCAction* fadeInOut = CCSequence::create(
+		CCFadeIn::create(0.5f), 
+		CCCallFuncN::create(this, callfuncN_selector(MenuScene::addScoresLayer)),
+		CCFadeOut::create(0.5f),
+		NULL);
+	m_buffer->runAction(fadeInOut);
+}
+
+//700
+void MenuScene::optionsClicked( CCObject* pSender )
+{
+	CCAction* fadeInOut = CCSequence::create(
+		CCFadeIn::create(0.5f), 
+		CCCallFuncN::create(this, callfuncN_selector(MenuScene::addOptionsLayer)),
+		CCFadeOut::create(0.5f),
+		NULL);
+	m_buffer->runAction(fadeInOut);
+}
+
+//800
+void MenuScene::aboutClicked( CCObject* pSender )
+{
+	CCAction* fadeInOut = CCSequence::create(
+		CCFadeIn::create(0.5f), 
+		CCCallFuncN::create(this, callfuncN_selector(MenuScene::addAboutLayer)),
+		CCFadeOut::create(0.5f),
+		NULL);
+	m_buffer->runAction(fadeInOut);
+}
+
+//900
+void MenuScene::helpClicked( CCObject* pSender )
+{
+	CCAction* fadeInOut = CCSequence::create(
+		CCFadeIn::create(0.5f), 
+		CCCallFuncN::create(this, callfuncN_selector(MenuScene::addHelpLayer)),
+		CCFadeOut::create(0.5f),
+		NULL);
+	m_buffer->runAction(fadeInOut);
+}
+
+
+#pragma endregion

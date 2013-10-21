@@ -27,6 +27,13 @@ public:
 
 	void deleteTriangle(CCNode* pSender);
 
+	void addStartLayer(CCNode* pSender);
+	void addScoresLayer(CCNode* pSender);
+	void addOptionsLayer(CCNode* pSender);
+	void addAboutLayer(CCNode* pSender);
+	void addHelpLayer(CCNode* pSender);
+
+
 	// a selector callback
 	void startClicked(CCObject* pSender);
 	void scoresClicked(CCObject* pSender);
@@ -39,6 +46,17 @@ public:
 	CREATE_FUNC(MenuScene);
 
 private:
+	CCMenuItemImage *m_itemStart;
+	CCMenuItemImage *m_itemScores;
+	CCMenuItemImage *m_itemOptions;
+	CCMenuItemImage *m_itemAbout;
+	CCMenuItemImage *m_itemHelp;
+
+	CCAction* m_repeatFadeInOut;
+	CCMenuItemImage* m_currentItem;
+	CCSprite* m_buffer;
+
+
 	CCSprite* m_sprBlend;
 	CCSprite* m_sprBlendCopy;
 
