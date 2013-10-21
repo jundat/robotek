@@ -80,6 +80,9 @@
     <ClInclude Include="..\Classes\CampaignScene.h">
       <Filter>Classes\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\CampaignData.h">
+      <Filter>Classes\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SceneTemplate.cpp.txt">

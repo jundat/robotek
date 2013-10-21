@@ -1,5 +1,6 @@
 #include "CampaignScene.h"
 #include "MenuScene.h"
+#include "CampaignData.h"
 
 
 CCScene* CampaignScene::scene()
@@ -45,14 +46,45 @@ bool CampaignScene::init()
 	//content campaign...
 
 	m_sprCampaign = CCSprite::create("imgCampaign.png");
-	m_sprCampaign->setPosition(ccp(m_sprCampaign->getContentSize().width/2, - MARGIN_Y + visibleSize.height - m_sprCampaign->getContentSize().height / 2));
-	this->addChild(m_sprCampaign, 0);
+	m_sprCampaign->setPosition(ccp(m_sprCampaign->getContentSize().width/2, visibleSize.height - m_sprCampaign->getContentSize().height/2));
 	m_sprCampaign->setBlendFunc(blendLinearDodge);
+	//map
+	createMap(m_sprCampaign);
+	this->addChild(m_sprCampaign, 0);
 
-	//back button...
+	//init current point border
+	m_sprPointBorder = CCSprite::create("imgPointBorder.png");
+	m_sprPointBorder->setPosition(ccp(-100, -100));
+	m_sprCampaign->addChild(m_sprPointBorder, 0);
+
+	CCAction* zoomInOut = CCRepeatForever::create(CCSequence::create(
+		CCScaleBy::create(0.5, 1.2, 1.2),
+		CCScaleBy::create(0.5, 1.2, 1.2)->reverse(),
+		NULL));
+	m_sprPointBorder->runAction(zoomInOut);
 
 	this->scheduleUpdate();
 	return true;
+}
+
+CCSprite* CampaignScene::createMap(CCSprite* sprCampaign)
+{
+	int len = (sizeof(g_campaignData)/sizeof(*g_campaignData));
+	CCSize size = sprCampaign->getContentSize();
+
+	ccBlendFunc blendLinearDodge = ccBlendFunc();
+	blendLinearDodge.src = GL_ONE;
+	blendLinearDodge.dst = GL_ONE;
+
+	for (int i = 0; i < len; ++i)
+	{
+		CCSprite* point = CCSprite::create("imgPointBlue.png");
+		point->setPosition(ccp(g_campaignData[i][0], size.height - g_campaignData[i][1]));
+		point->setBlendFunc(blendLinearDodge);
+		sprCampaign->addChild(point, 0, i); //tag = i
+	}
+	
+	return sprCampaign;
 }
 
 bool CampaignScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
@@ -62,7 +94,16 @@ bool CampaignScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 
 void CampaignScene::ccTouchEnded( CCTouch *pTouch, CCEvent *pEvent )
 {
+	int len = (sizeof(g_campaignData)/sizeof(*g_campaignData));
 
+	for (int i = 0; i < len; ++i)
+	{
+		CCNode* node = m_sprCampaign->getChildByTag(i);
+		if(node->boundingBox().containsPoint(m_sprCampaign->convertToNodeSpace(pTouch->getLocation())))
+		{
+			m_sprPointBorder->setPosition(node->getPosition());
+		}
+	}
 }
 
 void CampaignScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
