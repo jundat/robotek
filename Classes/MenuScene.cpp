@@ -6,6 +6,7 @@
 #include "AboutScene.h"
 #include "OptionsScene.h"
 #include "ScoresScene.h"
+#include "CampaignScene.h"
 
 USING_NS_CC;
 
@@ -166,7 +167,7 @@ void MenuScene::update(float delta)
 	//background moving...
 
 
-	int moveBg = (int)(delta * 60);
+	float moveBg = delta * 30;
 	m_sprBlend->setPositionX(m_sprBlend->getPositionX() + moveBg);
 
 	if(m_sprBlend->getPositionX() >= visibleSize.width + visibleSize.width/2) 
@@ -281,8 +282,7 @@ void MenuScene::addStartLayer( CCNode* pSender )
 		}
 	}
 
-	//CCNode* maingamescene = MainGameScene::create();
-	//this->addChild(maingamescene, 2, 500);
+	CCDirector::sharedDirector()->replaceScene(CampaignScene::scene());
 }
 
 void MenuScene::addScoresLayer( CCNode* pSender )
