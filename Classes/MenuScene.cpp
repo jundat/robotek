@@ -5,6 +5,7 @@
 #include "HelpScene.h"
 #include "AboutScene.h"
 #include "OptionsScene.h"
+#include "ScoresScene.h"
 
 USING_NS_CC;
 
@@ -249,22 +250,33 @@ void MenuScene::deleteTriangle(CCNode* pSender)
 	sprNew->runAction(sequen);
 }
 
+//500
 void MenuScene::startClicked(CCObject* pSender)
 {
 	CCMessageBox("start", "MENU");
 	//CCDirector::sharedDirector()->end();
 }
 
+//600
 void MenuScene::scoresClicked( CCObject* pSender )
 {
-	CCMessageBox("scores", "MENU");
-	//CCDirector::sharedDirector()->end();
+	for (int i = 900; i >= 500; i -= 100)
+	{
+		CCNode* scene = this->getChildByTag(i);
+		if(scene != NULL)
+		{
+			scene->removeFromParent();
+		}
+	}
+
+	CCNode* about = ScoresScene::create();
+	this->addChild(about, 2, 600);
 }
 
 //700
 void MenuScene::optionsClicked( CCObject* pSender )
 {
-	for (int i = 900; i >= 600; i -= 100)
+	for (int i = 900; i >= 500; i -= 100)
 	{
 		CCNode* scene = this->getChildByTag(i);
 		if(scene != NULL)
@@ -280,7 +292,7 @@ void MenuScene::optionsClicked( CCObject* pSender )
 //800
 void MenuScene::aboutClicked( CCObject* pSender )
 {
-	for (int i = 900; i >= 600; i -= 100)
+	for (int i = 900; i >= 500; i -= 100)
 	{
 		CCNode* scene = this->getChildByTag(i);
 		if(scene != NULL)
@@ -296,7 +308,7 @@ void MenuScene::aboutClicked( CCObject* pSender )
 //900
 void MenuScene::helpClicked( CCObject* pSender )
 {
-	for (int i = 900; i >= 600; i -= 100)
+	for (int i = 900; i >= 500; i -= 100)
 	{
 		CCNode* scene = this->getChildByTag(i);
 		if(scene != NULL)
