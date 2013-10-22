@@ -1,4 +1,4 @@
-#include "CampaignScene.h"
+﻿#include "CampaignScene.h"
 #include "MenuScene.h"
 #include "CampaignData.h"
 
@@ -52,16 +52,48 @@ bool CampaignScene::init()
 	createMap(m_sprCampaign);
 	this->addChild(m_sprCampaign, 0);
 
+	//Current Point Border
+
 	//init current point border
 	m_sprPointBorder = CCSprite::create("imgPointBorder.png");
 	m_sprPointBorder->setPosition(ccp(-100, -100));
 	m_sprCampaign->addChild(m_sprPointBorder, 0);
 
 	CCAction* zoomInOut = CCRepeatForever::create(CCSequence::create(
-		CCScaleBy::create(0.5, 1.2, 1.2),
-		CCScaleBy::create(0.5, 1.2, 1.2)->reverse(),
+		CCScaleBy::create(0.4f, 1.2f, 1.2f),
+		CCScaleBy::create(0.4f, 1.2f, 1.2f)->reverse(),
 		NULL));
 	m_sprPointBorder->runAction(zoomInOut);
+
+	//Current Infor Dialog
+
+	m_sprDialogPoint = CCSprite::create("dialogPoint.png");
+	m_sprDialogPoint->setScale(1.0f);
+	m_sprDialogPoint->setPosition(ccp(-1, -1));
+	m_sprDialogPoint->setOpacity(DIALOG_OPACITY);
+	m_sprCampaign->addChild(m_sprDialogPoint, 0);
+
+	m_sprDialogLine = CCSprite::create("dialogLine.png");
+	m_sprDialogLine->setScale(1.0f);
+	m_sprDialogLine->setPosition(ccp(-1, -1));
+	m_sprDialogLine->setOpacity(DIALOG_OPACITY);
+	m_sprCampaign->addChild(m_sprDialogLine, 0);
+
+
+	//TITLE....
+
+	m_labelBoxTitle =CCLabelBMFont::create("CHOOSE CITY" , "fonts/Calibri_44.fnt");
+	m_labelBoxTitle->setScale(SCALE_FONT_TITLE);
+	m_labelBoxTitle->setPosition(ccp(-100, -100));
+	m_labelBoxTitle->setColor(ccc3(80, 230, 255));
+	m_sprCampaign->addChild(m_labelBoxTitle, 1);
+
+	m_labelBoxContent =CCLabelBMFont::create("...content..." , "fonts/Calibri_44.fnt");
+	m_labelBoxContent->setScale(SCALE_FONT_CONTENT);
+	m_labelBoxContent->setPosition(ccp(-100, -100));
+	m_labelBoxContent->setColor(ccc3(18, 169, 220));
+	m_sprCampaign->addChild(m_labelBoxContent, 1);
+
 
 	this->scheduleUpdate();
 	return true;
@@ -95,14 +127,26 @@ bool CampaignScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 void CampaignScene::ccTouchEnded( CCTouch *pTouch, CCEvent *pEvent )
 {
 	int len = (sizeof(g_campaignData)/sizeof(*g_campaignData));
+	bool hasPoint = false;
 
 	for (int i = 0; i < len; ++i)
 	{
 		CCNode* node = m_sprCampaign->getChildByTag(i);
 		if(node->boundingBox().containsPoint(m_sprCampaign->convertToNodeSpace(pTouch->getLocation())))
 		{
-			m_sprPointBorder->setPosition(node->getPosition());
+			CCPoint p = node->getPosition();
+			char* title = g_campaignContent[i][0];
+			char* content = g_campaignContent[i][1];
+			setDialog(p, title, content);
+
+			hasPoint = true;
+			break;
 		}
+	}
+
+	if(hasPoint == false)
+	{
+		setDialog(ccp(-100, -100), "", "");
 	}
 }
 
@@ -112,6 +156,45 @@ void CampaignScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
 	float time = abs(delta.y) / 25;
 	CCActionInterval* moveby = CCMoveBy::create(time, delta);
 	m_sprCampaign->runAction(CCEaseSineOut::create(moveby));
+}
+
+void CampaignScene::setDialog(CCPoint p, char* title, char* content)
+{
+	//hightlight point
+
+	m_sprPointBorder->setPosition(p);
+
+	//info box
+
+	//string...
+
+	m_labelBoxTitle->setString(title);
+	m_labelBoxContent->setString(content);
+
+	float margin_left_dialog = 30; //khoảng cách từ điểm được chọn tới box
+	float margin_line_top = 30; //khoảng cách từ đầu box đến line
+	float margin_left_text = 10;
+	float wTitle = 2 * margin_left_text + SCALE_FONT_TITLE * m_labelBoxTitle->getContentSize().width;
+	float wContent = 2 * margin_left_text + SCALE_FONT_CONTENT * m_labelBoxContent->getContentSize().width;
+	float w = (wTitle > wContent) ? wTitle : wContent;
+	float h = margin_line_top + SCALE_FONT_TITLE *  m_labelBoxTitle->getContentSize().height + 
+		SCALE_FONT_CONTENT * m_labelBoxContent->getContentSize().height;
+
+
+	m_sprDialogPoint->setScaleX(w);
+	m_sprDialogPoint->setScaleY(h);
+
+	m_sprDialogLine->setScaleX(w);
+
+	CCPoint dp = ccp(p.x + margin_left_dialog + w/2, p.y);
+	CCPoint lp = ccp(dp.x, dp.y + h/2 - margin_line_top);
+	m_sprDialogPoint->setPosition(dp);
+	m_sprDialogLine->setPosition(lp);
+
+	//position string
+
+	m_labelBoxTitle->setPosition(ccp(lp.x - w/2 + wTitle/2, lp.y + 12));
+	m_labelBoxContent->setPosition(ccp(dp.x - w/2 + wContent/2, dp.y));
 }
 
 void CampaignScene::update( float delta )

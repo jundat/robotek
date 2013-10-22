@@ -5,8 +5,13 @@
 
 USING_NS_CC; //đừng bao giờ quên cái nồi này
 
-#define MARGIN_Y	100
-#define MARGIN_X	100
+#define MARGIN_Y			100
+#define MARGIN_X			100
+
+#define DIALOG_OPACITY		200
+
+#define SCALE_FONT_TITLE	0.6f
+#define SCALE_FONT_CONTENT	0.5f
 
 
 
@@ -32,6 +37,8 @@ public:
 	virtual void ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent);
 	virtual void ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent);
 
+	void setDialog(CCPoint p, char* title, char* content);
+
 	// implement the "static node()" method manually
 	CREATE_FUNC(CampaignScene);
 
@@ -42,6 +49,10 @@ public:
 private:
 	CCSprite* m_sprCampaign;
 	CCSprite* m_sprPointBorder; //current point
+	CCSprite* m_sprDialogPoint;
+	CCSprite* m_sprDialogLine;
+	CCLabelBMFont* m_labelBoxTitle;
+	CCLabelBMFont* m_labelBoxContent;
 
 	CCSprite* m_sprBlend;
 	CCSprite* m_sprBlendCopy;
