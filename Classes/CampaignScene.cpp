@@ -20,6 +20,7 @@ bool CampaignScene::init()
 	}
 
 	//touch init...
+	isMove = false;
 
 	CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 0, true);
 	this->setTouchEnabled(true);
@@ -94,6 +95,23 @@ bool CampaignScene::init()
 	m_labelBoxContent->setColor(ccc3(18, 169, 220));
 	m_sprCampaign->addChild(m_labelBoxContent, 1);
 
+	//BOLD-STAR
+
+	m_sprBold = CCSprite::create("bold.png");
+	m_sprStar = CCSprite::create("star.png");
+	m_sprCampaign->addChild(m_sprBold, 0);
+	m_sprCampaign->addChild(m_sprStar, 0);
+
+	m_lableBold = CCLabelBMFont::create("0", "fonts/Calibri_44.fnt");
+	m_lableStar = CCLabelBMFont::create("0", "fonts/Calibri_44.fnt");
+	m_lableBold->setScale(SCALE_FONT_BOLD);
+	m_lableStar->setScale(SCALE_FONT_STAR);
+	m_lableBold->setPosition(ccp(-100, -100));
+	m_lableStar->setPosition(ccp(-100, -100));
+
+	m_sprCampaign->addChild(m_lableBold);
+	m_sprCampaign->addChild(m_lableStar);
+
 
 	this->scheduleUpdate();
 	return true;
@@ -126,39 +144,46 @@ bool CampaignScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 
 void CampaignScene::ccTouchEnded( CCTouch *pTouch, CCEvent *pEvent )
 {
-	int len = (sizeof(g_campaignData)/sizeof(*g_campaignData));
-	bool hasPoint = false;
-
-	for (int i = 0; i < len; ++i)
+	if(isMove == false)
 	{
-		CCNode* node = m_sprCampaign->getChildByTag(i);
-		if(node->boundingBox().containsPoint(m_sprCampaign->convertToNodeSpace(pTouch->getLocation())))
-		{
-			CCPoint p = node->getPosition();
-			char* title = g_campaignContent[i][0];
-			char* content = g_campaignContent[i][1];
-			setDialog(p, title, content);
+		int len = (sizeof(g_campaignData)/sizeof(*g_campaignData));
+		bool hasPoint = false;
 
-			hasPoint = true;
-			break;
+		for (int i = 0; i < len; ++i)
+		{
+			CCNode* node = m_sprCampaign->getChildByTag(i);
+			if(node->boundingBox().containsPoint(m_sprCampaign->convertToNodeSpace(pTouch->getLocation())))
+			{
+				CCPoint p = node->getPosition();
+				char* title = g_campaignContent[i][0];
+				char* content = g_campaignContent[i][1];
+				setDialog(p, title, content, i, i);
+
+				hasPoint = true;
+				break;
+			}
+		}
+
+		if(hasPoint == false)
+		{
+			setDialog(ccp(-100, -100), "", "", 0, 0);
 		}
 	}
 
-	if(hasPoint == false)
-	{
-		setDialog(ccp(-100, -100), "", "");
-	}
+	isMove = false;
 }
 
 void CampaignScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
 {
+	isMove = true;
+
 	CCPoint delta  = pTouch->getDelta();	
 	float time = abs(delta.y) / 25;
 	CCActionInterval* moveby = CCMoveBy::create(time, delta);
 	m_sprCampaign->runAction(CCEaseSineOut::create(moveby));
 }
 
-void CampaignScene::setDialog(CCPoint p, char* title, char* content)
+void CampaignScene::setDialog(CCPoint p, char* title, char* content, int bold, int star)
 {
 	//hightlight point
 
@@ -195,6 +220,21 @@ void CampaignScene::setDialog(CCPoint p, char* title, char* content)
 
 	m_labelBoxTitle->setPosition(ccp(lp.x - w/2 + wTitle/2, lp.y + 12));
 	m_labelBoxContent->setPosition(ccp(dp.x - w/2 + wContent/2, dp.y));
+
+	//star and bold
+
+	m_lableBold->setString(CCString::createWithFormat("%d", 123)->getCString());
+	CCPoint pLabelBold = ccp(dp.x + w/2 - SCALE_FONT_BOLD * m_lableBold->getContentSize().width/2, dp.y + h/2 - SCALE_FONT_BOLD * m_lableBold->getContentSize().height/2);
+	m_lableBold->setPosition(pLabelBold);
+	CCPoint psprBold = ccp(pLabelBold.x - m_sprBold->getContentSize().width/2 - SCALE_FONT_BOLD * m_lableBold->getContentSize().width/2, pLabelBold.y);
+	m_sprBold->setPosition(psprBold);
+
+	m_lableStar->setString(CCString::createWithFormat("%d", 765)->getCString());
+	CCPoint pLabelStar = ccp(psprBold.x - m_sprBold->getContentSize().width/2 - SCALE_FONT_STAR * m_lableStar->getContentSize().width/2, pLabelBold.y);	
+	m_lableStar->setPosition(pLabelStar);
+	CCPoint psprStar = ccp(pLabelStar.x - m_sprStar->getContentSize().width/2 - SCALE_FONT_STAR * m_lableStar->getContentSize().width/2, pLabelStar.y);
+	m_sprStar->setPosition(psprStar);
+	/////////////////
 }
 
 void CampaignScene::update( float delta )

@@ -6,6 +6,7 @@ long Random::addend = 0xB;
 long Random::mask = (1L << 48) - 1;
 long Random::seed= 0x2342dda;    
 
+
 Random::Random(void) {
 }
 

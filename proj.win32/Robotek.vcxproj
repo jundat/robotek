@@ -133,7 +133,6 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClCompile Include="..\Classes\HelpScene.cpp" />
     <ClCompile Include="..\Classes\MenuScene.cpp" />
     <ClCompile Include="..\Classes\OptionsScene.cpp" />
-    <ClCompile Include="..\Classes\Random.cpp" />
     <ClCompile Include="..\Classes\ScoresScene.cpp" />
     <ClCompile Include="..\Classes\SplashScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -147,7 +146,6 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClInclude Include="..\Classes\HelpScene.h" />
     <ClInclude Include="..\Classes\MenuScene.h" />
     <ClInclude Include="..\Classes\OptionsScene.h" />
-    <ClInclude Include="..\Classes\Random.h" />
     <ClInclude Include="..\Classes\ScoresScene.h" />
     <ClInclude Include="..\Classes\SplashScene.h" />
     <ClInclude Include="main.h" />

@@ -1,6 +1,5 @@
 ﻿#include "MenuScene.h"
 #include "Global.h"
-#include "Random.h"
 
 #include "HelpScene.h"
 #include "AboutScene.h"
@@ -62,22 +61,24 @@ bool MenuScene::init()
 		
 		sprNew->setBlendFunc(blendLinearDodge);
 
+		
+
 		//random scale
-		float scalex = (float) (RANDOM(10) / 20.0 + 0.15);
-		float scaley = (float) (RANDOM(10) / 20.0 + 0.15);
+		float scalex = (float) (CCRANDOM_0_1()/2 + 0.15); //
+		float scaley = (float) (CCRANDOM_0_1()/2 + 0.15);
 		sprNew->setScaleX(scalex);
 		sprNew->setScaleY(scaley);
 
 		//random rotate
-		float rota = (float) (RANDOM(180));
+		float rota = (float) (CCRANDOM_0_1() * 180);
 		sprNew->setRotation(rota);
 		
 		//random begin position
-		int sx = RANDOM(visibleSize.width);
-		int sy = RANDOM(visibleSize.height);
+		int sx = CCRANDOM_0_1() * visibleSize.width;
+		int sy = CCRANDOM_0_1() * visibleSize.height;
 
 		//random destination position
-		int dx = sx + RANDOM(visibleSize.width / 5);
+		int dx = sx + CCRANDOM_0_1() * visibleSize.width/5;
 		int dy = visibleSize.height + 30;
 
 		int time = (dy - sy) / 32;
@@ -234,21 +235,21 @@ void MenuScene::deleteTriangle(CCNode* pSender)
 	CCSprite* sprNew = (CCSprite*) pSender;
 
 	//random scale
-	float scalex = (float) (RANDOM(10) / 20.0 + 0.15);
-	float scaley = (float) (RANDOM(10) / 20.0 + 0.15);
+	float scalex = (float) (CCRANDOM_0_1()/2 + 0.15);
+	float scaley = (float) (CCRANDOM_0_1()/2 + 0.15);
 	sprNew->setScaleX(scalex);
 	sprNew->setScaleY(scaley);
 
 	//random rotate
-	float rota = (float) (RANDOM(180));
+	float rota = (float) (CCRANDOM_0_1() * 180);
 	sprNew->setRotation(rota);
 
 	//random begin position
-	int sx = RANDOM(visibleSize.width);
+	int sx = CCRANDOM_0_1() * (visibleSize.width);
 	int sy = -30;
 
 	//random destination position
-	int dx = sx + RANDOM(visibleSize.width / 5);
+	int dx = sx + CCRANDOM_0_1() * (visibleSize.width/5);
 	int dy = visibleSize.height;
 
 	int time = (dy - sy) / 32;

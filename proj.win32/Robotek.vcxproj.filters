@@ -27,9 +27,6 @@
     <ClCompile Include="..\Classes\MenuScene.cpp">
       <Filter>Classes\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Random.cpp">
-      <Filter>Classes\Ultils</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\HelpScene.cpp">
       <Filter>Classes\Scene</Filter>
     </ClCompile>
@@ -61,9 +58,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Global.h">
       <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Random.h">
-      <Filter>Classes\Ultils</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\HelpScene.h">
       <Filter>Classes\Scene</Filter>

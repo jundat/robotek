@@ -13,7 +13,8 @@ USING_NS_CC; //đừng bao giờ quên cái nồi này
 #define SCALE_FONT_TITLE	0.6f
 #define SCALE_FONT_CONTENT	0.5f
 
-
+#define SCALE_FONT_BOLD		0.6f
+#define SCALE_FONT_STAR		0.6f
 
 class CampaignScene : public cocos2d::CCLayerColor
 {
@@ -37,7 +38,7 @@ public:
 	virtual void ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent);
 	virtual void ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent);
 
-	void setDialog(CCPoint p, char* title, char* content);
+	void setDialog(CCPoint p, char* title, char* content, int bold, int star);
 
 	// implement the "static node()" method manually
 	CREATE_FUNC(CampaignScene);
@@ -47,12 +48,19 @@ public:
 
 
 private:
+	bool isMove;
+
 	CCSprite* m_sprCampaign;
 	CCSprite* m_sprPointBorder; //current point
 	CCSprite* m_sprDialogPoint;
 	CCSprite* m_sprDialogLine;
 	CCLabelBMFont* m_labelBoxTitle;
 	CCLabelBMFont* m_labelBoxContent;
+	CCLabelBMFont* m_lableBold;
+	CCLabelBMFont* m_lableStar;
+	CCSprite* m_sprBold;
+	CCSprite* m_sprStar;
+
 
 	CCSprite* m_sprBlend;
 	CCSprite* m_sprBlendCopy;
